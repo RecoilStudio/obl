@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>OBLRewards</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="OBLRewards: leaderboard, links and FAQ for gamba.com with code OBL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky bar with tabs, a code-first hero, then one tab panel at a time (leaderboard has a podium + ranked rows).
+   Deliberate single dark look: black ground, one green accent. */
+:root {
+  --ground: #050805;
+  --surface: #0d130e;
+  --surface-hi: #141d16;
+  --line: #1f3324;
+  --text: #ecf6ee;
+  --muted: #8aa391;
+  --accent: #1fe068;
+  --accent-ink: #021208;
+  --silver: #c9cde0;
+  --bronze: #e08a5a;
+  --good: #1fe068;
+  --font-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background-image: radial-gradient(900px 420px at 85% -80px, rgba(31,224,104,.10), transparent 70%),
+                    radial-gradient(700px 400px at 0% 0%, rgba(18,120,60,.20), transparent 70%);
+  background-repeat: no-repeat;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+
+/* top bar */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ground); }
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.bar-inner { max-width: 1040px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 18px; text-decoration: none; letter-spacing: -0.02em; }
+.brand b { color: var(--accent); font-weight: 800; }
+nav { display: flex; gap: 4px; }
+nav a {
+  text-decoration: none; padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 15px; color: var(--muted);
+  transition: background .15s, color .15s;
+}
+nav a:hover { color: var(--text); background: var(--surface); }
+nav a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+
+/* hero */
+.hero { padding-block: 44px 28px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero h1 { font-size: clamp(34px, 6vw, 62px); font-weight: 800; line-height: 1.02; }
+.hero p { color: var(--muted); max-width: 46ch; margin: 18px 0 0; font-size: 17px; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 22px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--text); font-family: inherit;
+  transition: transform .12s, background .15s;
+}
+.btn:hover { background: var(--surface-hi); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { background: #4af08a; }
+
+.ticket {
+  position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 26px 26px 22px;
+  background-image: linear-gradient(135deg, rgba(31,224,104,.12), transparent 55%);
+}
+.ticket::before, .ticket::after {
+  content: ""; position: absolute; top: 58%; width: 26px; height: 26px; border-radius: 50%; background: var(--ground); border: 1px solid var(--line);
+}
+.ticket::before { left: -14px; clip-path: inset(0 0 0 50%); }
+.ticket::after { right: -14px; clip-path: inset(0 50% 0 0); }
+.ticket small { color: var(--muted); font-weight: 600; font-size: 14px; }
+.code { font-family: var(--font-display); font-weight: 800; font-size: clamp(56px, 11vw, 88px); line-height: 1; color: var(--accent); margin: 6px 0 20px; letter-spacing: 0.02em; }
+.ticket .rule { border-top: 2px dashed var(--line); margin: 0 -26px 18px; }
+.copy { width: 100%; }
+.ticket .where { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+
+/* panels */
+main { padding-top: 12px; }
+section[role="tabpanel"] { padding-top: 24px; }
+section[role="tabpanel"][hidden] { display: none; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.sec-head h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; }
+.sec-head p { margin: 6px 0 0; color: var(--muted); }
+
+/* leaderboard stats */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+.stat span { display: block; color: var(--muted); font-size: 14px; font-weight: 600; }
+.stat strong { display: block; font-family: var(--font-display); font-size: clamp(20px, 3.4vw, 30px); font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.stat strong.accent { color: var(--accent); }
+.count { display: flex; gap: 10px; font-variant-numeric: tabular-nums; }
+.count i { font-style: normal; font-size: 12px; color: var(--muted); font-family: var(--font-body); font-weight: 600; margin-left: 2px; }
+
+/* podium */
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: end; margin-bottom: 14px; }
+.pod { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 16px 16px; text-align: center; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pod .place { font-family: var(--font-display); font-weight: 800; font-size: 14px; }
+.pod .name { font-weight: 700; font-size: 17px; overflow-wrap: anywhere; }
+.pod .wager { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pod .prize { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: var(--ground); font-family: var(--font-display); font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums; }
+.pod.p1 { padding-block: 30px 22px; border-color: var(--accent); background-image: linear-gradient(180deg, rgba(31,224,104,.16), transparent 70%); }
+.pod.p1 .place, .pod.p1 .prize { color: var(--accent); }
+.pod.p2 .place, .pod.p2 .prize { color: var(--silver); }
+.pod.p3 .place, .pod.p3 .prize { color: var(--bronze); }
+.pod.p1 .name { font-size: 20px; }
+.podium .pod:nth-child(1) { order: 2; }
+.podium .pod:nth-child(2) { order: 1; }
+.podium .pod:nth-child(3) { order: 3; }
+
+/* rows */
+.rows { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 14px 18px; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.row:first-child { border-top: 0; }
+.row.head { color: var(--muted); font-size: 13px; font-weight: 600; background: var(--surface-hi); }
+.row .rank { font-family: var(--font-display); font-weight: 800; color: var(--muted); }
+.row .nm { font-weight: 600; overflow-wrap: anywhere; }
+.row .wg { text-align: right; color: var(--muted); min-width: 110px; }
+.row .pz { text-align: right; font-weight: 700; min-width: 72px; color: var(--good); }
+.row .pz.none { color: var(--muted); font-weight: 500; }
+.note { margin-top: 14px; color: var(--muted); font-size: 14px; }
+.tag { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--surface-hi); border: 1px solid var(--line); color: var(--muted); font-size: 13px; font-weight: 600; }
+
+/* links */
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.lk { display: flex; flex-direction: column; gap: 6px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; min-width: 0; transition: border-color .15s, background .15s; }
+a.lk:hover { border-color: var(--accent); background: var(--surface-hi); }
+.lk h3 { font-size: 18px; font-weight: 800; }
+.lk p { margin: 0; color: var(--muted); font-size: 15px; }
+.lk .go { margin-top: auto; padding-top: 10px; font-weight: 700; color: var(--accent); }
+.lk.main { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-color: var(--accent); background-image: linear-gradient(120deg, rgba(31,224,104,.14), transparent 60%); }
+.lk.main h3 { font-size: clamp(20px, 3.4vw, 26px); }
+.lk.off { opacity: .65; }
+.lk.off .go { color: var(--muted); }
+
+/* faq */
+.faq { display: grid; gap: 10px; max-width: 760px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+summary { cursor: pointer; list-style: none; padding: 16px 18px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--font-display); color: var(--accent); font-size: 20px; line-height: 1; transition: transform .2s; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin: 0; padding: 0 18px 18px; color: var(--muted); max-width: 62ch; }
+details p strong { color: var(--text); }
+
+footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: grid; gap: 10px; }
+footer .age { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; }
+footer .age b { border: 2px solid var(--accent); color: var(--accent); border-radius: 50%; width: 34px; height: 34px; display: inline-grid; place-items: center; font-family: var(--font-display); font-size: 12px; }
+footer p { margin: 0; max-width: 78ch; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: var(--accent); color: var(--accent-ink); font-weight: 700; padding: 10px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 40; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding-top: 30px; }
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .count { gap: 14px; }
+  .row { grid-template-columns: 38px minmax(0, 1fr) auto; padding: 12px 14px; }
+  .row .wg { display: none; }
+  .row.head .wg { display: none; }
+  .pod { padding-inline: 8px; }
+  .pod .name { font-size: 14px; }
+  .pod.p1 .name { font-size: 16px; }
+  .pod .prize { font-size: 14px; padding: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <div class="bar-inner">
+      <a class="brand" href="#leaderboard">OBL<b>Rewards</b></a>
+      <nav role="tablist" aria-label="Sections">
+        <a href="#leaderboard" data-tab="leaderboard" role="tab">Leaderboard</a>
+        <a href="#links" data-tab="links" role="tab">Links</a>
+        <a href="#faq" data-tab="faq" role="tab">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Sign up on Gamba with code OBL</h1>
+      <p>Use the code when you create your account on gamba.com, then wager to climb the monthly leaderboard and win a share of the prize pool.</p>
+      <div class="cta-row">
+        <a class="btn primary" id="join" href="https://gamba.com" target="_blank" rel="noopener sponsored">Join on gamba.com</a>
+        <a class="btn" href="#leaderboard" data-go="leaderboard">See the leaderboard</a>
+      </div>
+    </div>
+    <div class="ticket">
+      <small>Your referral code</small>
+      <div class="code" id="codeText">OBL</div>
+      <div class="rule"></div>
+      <button class="btn copy" id="copyBtn" type="button">Copy code</button>
+      <p class="where">Enter it in the code field when you register on gamba.com.</p>
+    </div>
+  </div>
+
+  <main>
+    <section role="tabpanel" id="leaderboard" aria-label="Leaderboard">
+      <div class="sec-head">
+        <div>
+          <h2>Monthly leaderboard</h2>
+          <p>Ranked by total wagered on gamba.com while using code OBL.</p>
+        </div>
+        <span class="tag" id="sampleTag">Example data</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>Prize pool</span><strong class="accent" id="pool"></strong></div>
+        <div class="stat"><span>Ends in</span><strong class="count" id="count" aria-live="off"></strong></div>
+        <div class="stat"><span>Players ranked</span><strong id="players"></strong></div>
+      </div>
+
+      <div class="podium" id="podium"></div>
+      <div class="rows" id="rows"></div>
+      <p class="note" id="lbNote"></p>
+    </section>
+
+    <section role="tabpanel" id="links" aria-label="Links" hidden>
+      <div class="sec-head">
+        <div>
+          <h2>Links</h2>
+          <p>Everything in one place.</p>
+        </div>
+      </div>
+      <div class="links" id="linkGrid"></div>
+    </section>
+
+    <section role="tabpanel" id="faq" aria-label="FAQ" hidden>
+      <div class="sec-head">
+        <div>
+          <h2>FAQ</h2>
+          <p>Short answers to the usual questions.</p>
+        </div>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>How do I enter the leaderboard?</summary>
+          <p>Create a new account on gamba.com and enter <strong>OBL</strong> in the code field at sign-up. Once your account is linked to the code, your wagers count toward the leaderboard.</p>
+        </details>
+        <details>
+          <summary>I already have a Gamba account. Can I still join?</summary>
+          <p>Eligibility depends on Gamba's rules for adding a code to an existing account. Check the terms on gamba.com or ask in the Discord before you play.</p>
+        </details>
+        <details>
+          <summary>How is the leaderboard ranked?</summary>
+          <p>Players are ranked by total amount wagered during the period shown on the leaderboard page. The timer on this page counts down to the end of the current period.</p>
+        </details>
+        <details>
+          <summary>When and how are prizes paid?</summary>
+          <p>Prizes are paid to the winners' Gamba accounts after each period closes and the results are verified. Announcements go out in the Discord.</p>
+        </details>
+        <details>
+          <summary>Why are usernames partly hidden?</summary>
+          <p>Names are masked to protect players' privacy. You will always see your own name in full on Gamba.</p>
+        </details>
+        <details>
+          <summary>Does using the code cost me anything?</summary>
+          <p>No. The code does not change the price of anything on Gamba. It links your account to this page so your wagers are tracked.</p>
+        </details>
+        <details>
+          <summary>Is gambling risky?</summary>
+          <p>Yes. You can lose money, and you should only play with what you can afford to lose. Set limits, take breaks, and stop if it stops being fun. Help is listed at the bottom of this page.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="age"><b>18+</b> Gamble responsibly</span>
+    <p>You must be 18 or older, or the legal gambling age where you live. Gambling can be addictive. If it is causing you harm, free support is available at begambleaware.org and gamblingtherapy.org.</p>
+    <p>OBLRewards is an independent affiliate site and is not operated by Gamba. Using code OBL may earn the site a commission at no cost to you. Check that online gambling is legal in your location before you sign up.</p>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status">Code copied</div>
+
+<script>
+/* ===== Edit these ===== */
+var CONFIG = {
+  code: "OBL",
+  siteUrl: "https://gamba.com",
+  periodEnd: "2026-11-30T23:59:59Z",   // when the current leaderboard period ends
+  prizePool: 5000,                      // total in USD
+  prizes: [2000, 1000, 600, 400, 300, 250, 200, 150, 100],  // 1st, 2nd, 3rd...
+  sample: true,                         // set to false once you load real players
+  players: [                            // name (masked), wagered in USD
+    { name: "ra***ol", wagered: 184220 },
+    { name: "ni***99", wagered: 151780 },
+    { name: "ho***ey", wagered: 127450 },
+    { name: "ka***ng", wagered: 96310 },
+    { name: "zo***ie", wagered: 81905 },
+    { name: "mi***xx", wagered: 64020 },
+    { name: "tu***on", wagered: 52380 },
+    { name: "je***ro", wagered: 41150 },
+    { name: "sa***ra", wagered: 33790 },
+    { name: "do***ky", wagered: 27240 }
+  ],
+  links: [
+    { title: "Gamba", text: "Create your account and enter code OBL at sign-up.", url: "https://gamba.com", cta: "Join on gamba.com", main: true },
+    { title: "Kick", text: "Watch the stream live.", url: "", cta: "Watch live" },
+    { title: "Discord", text: "Giveaways, results and chat with the community.", url: "", cta: "Join the Discord" },
+    { title: "X", text: "Announcements and clips.", url: "", cta: "Follow" },
+    { title: "YouTube", text: "Highlights and big wins.", url: "", cta: "Subscribe" }
+  ]
+};
+/* ====================== */
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var usd = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var ordinal = function (n) { return n + (["th", "st", "nd", "rd"][(n % 100 > 10 && n % 100 < 14) ? 0 : (n % 10 < 4 ? n % 10 : 0)]); };
+
+  /* code + join link */
+  $("codeText").textContent = CONFIG.code;
+  $("join").href = CONFIG.siteUrl;
+
+  /* leaderboard */
+  var players = CONFIG.players.slice().sort(function (a, b) { return b.wagered - a.wagered; });
+  $("pool").textContent = usd(CONFIG.prizePool);
+  $("players").textContent = players.length;
+  if (!CONFIG.sample) $("sampleTag").hidden = true;
+
+  var pods = "";
+  players.slice(0, 3).forEach(function (p, i) {
+    pods += '<div class="pod p' + (i + 1) + '"><span class="place">' + ordinal(i + 1) + '</span>' +
+      '<span class="name">' + esc(p.name) + '</span>' +
+      '<span class="wager">' + usd(p.wagered) + ' wagered</span>' +
+      '<span class="prize">' + (CONFIG.prizes[i] ? usd(CONFIG.prizes[i]) : "-") + '</span></div>';
+  });
+  $("podium").innerHTML = pods;
+
+  var rows = '<div class="row head"><span>Rank</span><span>Player</span><span class="wg">Wagered</span><span class="pz">Prize</span></div>';
+  players.slice(3).forEach(function (p, i) {
+    var r = i + 4, prize = CONFIG.prizes[r - 1];
+    rows += '<div class="row"><span class="rank">' + r + '</span><span class="nm">' + esc(p.name) + '</span>' +
+      '<span class="wg">' + usd(p.wagered) + '</span>' +
+      '<span class="pz' + (prize ? '' : ' none') + '">' + (prize ? usd(prize) : "-") + '</span></div>';
+  });
+  $("rows").innerHTML = rows;
+  $("lbNote").textContent = CONFIG.sample
+    ? "Example names and numbers shown until the first live period is loaded."
+    : "Standings update during the period. Final results are verified before prizes are paid.";
+
+  /* countdown */
+  var end = new Date(CONFIG.periodEnd).getTime();
+  function tick() {
+    var ms = Math.max(0, end - Date.now()), s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    $("count").innerHTML = d + '<i>d</i> ' + h + '<i>h</i> ' + m + '<i>m</i>';
+  }
+  tick(); setInterval(tick, 30000);
+
+  /* links */
+  var lg = "";
+  CONFIG.links.forEach(function (l) {
+    var live = !!l.url, tag = live ? "a" : "div";
+    var attrs = live ? ' href="' + esc(l.url) + '" target="_blank" rel="noopener' + (l.main ? ' sponsored' : '') + '"' : "";
+    lg += "<" + tag + ' class="lk' + (l.main ? " main" : "") + (live ? "" : " off") + '"' + attrs + ">" +
+      "<div><h3>" + esc(l.title) + "</h3><p>" + esc(l.text) + "</p></div>" +
+      '<span class="go">' + (live ? esc(l.cta) : "Link coming soon") + "</span></" + tag + ">";
+  });
+  $("linkGrid").innerHTML = lg;
+
+  /* copy */
+  var toast = $("toast"), tt;
+  function say(msg) { toast.textContent = msg; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove("show"); }, 1800); }
+  $("copyBtn").addEventListener("click", function () {
+    var ok = function () { say("Code " + CONFIG.code + " copied"); };
+    var fallback = function () {
+      var r = document.createRange(); r.selectNodeContents($("codeText"));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      say("Press copy to save the code");
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(CONFIG.code).then(ok, fallback);
+    else fallback();
+  });
+
+  /* tabs */
+  var tabs = ["leaderboard", "links", "faq"];
+  function show(name) {
+    if (tabs.indexOf(name) < 0) name = "leaderboard";
+    tabs.forEach(function (t) { $(t).hidden = t !== name; });
+    document.querySelectorAll("nav a").forEach(function (a) {
+      if (a.dataset.tab === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
+  show(location.hash.slice(1));
+})();
+</script>
+
+</body>
+</html>
